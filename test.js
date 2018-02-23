@@ -45,7 +45,7 @@ async function rename() {
   const ngRename = new NgRename(OLD_COMP_NAME, NEW_COMP_NAME, {
     dir: COMP_DIR
   })
-  ngRename.execute()
+  await ngRename.execute()
 }
 
 

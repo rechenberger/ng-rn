@@ -11,9 +11,10 @@ class NgRename {
     this.new = this.createNames(newName)
   }
 
-  execute() {
-    this.copyFiles()
-    this.replace()
+  async execute() {
+    await this.copyFiles()
+    await this.replace()
+      .then(console.log)
   }
 
   async copyFiles() {
@@ -44,20 +45,22 @@ class NgRename {
 
     const ps = ['fileName', 'className']
 
-    ps.map(property => {
+    for (let property of ps) {
       const fromString = this.old[property]
       const toString = this.new[property]
 
       const from = new RegExp(`(${fromString})([^-a-zA-Z0-9])`, 'g')
+      console.log('RegEx', from)
       const to = `${toString}$2`
 
-      return replaceInFile({
+      const results = await replaceInFile({
         files,
         from,
         to
       })
 
-    })
+      console.log("result", results)
+    }
 
   }
 
