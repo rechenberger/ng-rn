@@ -19,5 +19,9 @@
   "devDependencies": {},
   "bin": {
     "ng-rn": "./bin/ng-rn.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rechenberger/ng-rn.git"
   }
 }
