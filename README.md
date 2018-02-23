@@ -18,7 +18,7 @@
   ng-rn old-button fancy-button
 ```
 
-The Tool looks for the components in `src/app/` . If your components are located in a more complex path like `src/app/my-vip-components`, just change directory:
+The Tool looks for the components in `src/app/`. If your components are located in a more complex path like `src/app/my-vip-components`, just change directory:
 ```
   cd src/app/my-vip-components
   ng-rn old-button fancy-button
