@@ -3,10 +3,11 @@ const cpx = require('cpx')
 const changeCase = require('change-case')
 const rimraf = require('rimraf')
 const replaceInFile = require('replace-in-file')
+const _ = require('lodash')
 
 class NgRename {
   constructor(oldName, newName, options) {
-    this.dir = options.dir || process.env.cwd
+    this.dir = options.dir
     this.old = this.createNames(oldName)
     this.new = this.createNames(newName)
   }
@@ -44,6 +45,8 @@ class NgRename {
 
     const ps = ['fileName', 'className']
 
+    const updatedFiles = []
+
     for (let property of ps) {
       const fromString = this.old[property]
       const toString = this.new[property]
@@ -58,8 +61,13 @@ class NgRename {
         to
       })
 
-      // console.log("updated", results)
+      updatedFiles.push(...results)
     }
+
+    console.log('Modified the following files:')
+    _(updatedFiles)
+      .uniq()
+      .each(updatedFile => console.log(updatedFile))
 
   }
 
@@ -71,6 +79,17 @@ class NgRename {
     }
     catch (e) {
       return this.findNgProjectDir(`${dir}/..`)
+    }
+  }
+
+  findComponentFolder(dir) {
+    dir = dir || `${this.dir}/src/app`
+    try {
+      fs.readFileSync(`${dir}/${this.old.fileName}/${this.old.fileName}.component.ts`)
+      return dir
+    }
+    catch (e) {
+      return this.findComponentFolder(`${dir}/..`)
     }
   }
 }
