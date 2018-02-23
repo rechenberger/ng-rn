@@ -1,6 +1,8 @@
 const fs = require('fs')
 const cpx = require('cpx')
 const changeCase = require('change-case')
+const rimraf = require('rimraf')
+const replaceInFile = require('replace-in-file')
 
 class NgRename {
   constructor(oldName, newName, options) {
@@ -10,25 +12,64 @@ class NgRename {
   }
 
   execute() {
-    // Copy Files
     this.copyFiles()
-    // Rename Files
-    // Replace EVERYWHERE
-    // (next char is not: -,[A-Z] )
+    this.replace()
   }
 
   async copyFiles() {
+    // // Copy Files
     await new Promise((res, rej) => cpx.copy(`${this.old.folder}/**`, `${this.new.folder}`, err => err ? rej(err) : res()))
+    // // Delete old Files
+    await new Promise(res => rimraf(this.old.folder, res))
+    // Rename files
+    const files = fs.readdirSync(this.new.folder)
+    files.forEach(file => {
+      const newFileName = file.replace(this.old.fileName, this.new.fileName)
+      fs.renameSync(`${this.new.folder}/${file}`, `${this.new.folder}/${newFileName}`)
+    })
   }
 
   createNames(name) {
     const names = {
       fileName: changeCase.paramCase(name),
-      className: changeCase.pascalCase(name),
-
+      className: `${changeCase.pascalCase(name)}Component`,
     }
     names.folder = `${this.dir}/${names.fileName}`
     return names
+  }
+
+  async replace() {
+    const ngProjectDir = this.findNgProjectDir()
+    const files = `${ngProjectDir}/src/**`
+
+    const ps = ['fileName', 'className']
+
+    ps.map(property => {
+      const fromString = this.old[property]
+      const toString = this.new[property]
+
+      const from = new RegExp(`(${fromString})([^-a-zA-Z0-9])`, 'g')
+      const to = `${toString}$2`
+
+      return replaceInFile({
+        files,
+        from,
+        to
+      })
+
+    })
+
+  }
+
+  findNgProjectDir(dir) {
+    dir = dir || this.dir
+    try {
+      fs.readFileSync(`${dir}/.angular-cli.json`)
+      return dir
+    }
+    catch (e) {
+      return this.findNgProjectDir(`${dir}/..`)
+    }
   }
 }
 

@@ -9,10 +9,15 @@ const OLD_COMP_NAME = 'some-button'
 const NEW_COMP_NAME = 'better-button'
 
 async function main() {
-  // await removeProject()
-  // await initProject()
+  console.log('removeProject')
+  await removeProject()
+  console.log('initProject')
+  await initProject()
+  console.log('newComponent')
   await newComponent()
+  console.log('rename')
   await rename()
+  console.log('done')
 }
 
 async function removeProject() {
@@ -20,7 +25,7 @@ async function removeProject() {
 }
 
 async function initProject() {
-  return executeCommand(`ng new ${PROJECTNAME}`)
+  return executeCommand(`ng new ${PROJECTNAME} --skip-install`)
 }
 
 async function newComponent() {
@@ -28,7 +33,7 @@ async function newComponent() {
 }
 
 async function executeCommand(command) {
-  new Promise((res, rej) => {
+  return new Promise((res, rej) => {
     exec(command, (err) => {
       if (err) return rej(err)
       return res()
