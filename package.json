@@ -11,5 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "cpx": "^1.5.0"
+  },
+  "devDependencies": {
+    "rimraf": "^2.6.2"
   }
 }
