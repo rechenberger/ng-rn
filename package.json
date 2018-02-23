@@ -1,6 +1,6 @@
 {
   "name": "ng-rn",
-  "version": "0.9.0",
+  "version": "0.9.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,10 +13,11 @@
     "change-case": "^3.0.1",
     "cpx": "^1.5.0",
     "lodash": "^4.17.5",
-    "replace-in-file": "^3.1.1"
-  },
-  "devDependencies": {
+    "replace-in-file": "^3.1.1",
     "rimraf": "^2.6.2"
   },
-  "bin": "./bin/ng-rn.js"
+  "devDependencies": {},
+  "bin": {
+    "ng-rn": "./bin/ng-rn.js"
+  }
 }
