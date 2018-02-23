@@ -14,7 +14,6 @@ class NgRename {
   async execute() {
     await this.copyFiles()
     await this.replace()
-      .then(console.log)
   }
 
   async copyFiles() {
@@ -50,7 +49,7 @@ class NgRename {
       const toString = this.new[property]
 
       const from = new RegExp(`(${fromString})([^-a-zA-Z0-9])`, 'g')
-      console.log('RegEx', from)
+      // console.log('RegEx', from)
       const to = `${toString}$2`
 
       const results = await replaceInFile({
@@ -59,7 +58,7 @@ class NgRename {
         to
       })
 
-      console.log("result", results)
+      // console.log("updated", results)
     }
 
   }
