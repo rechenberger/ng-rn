@@ -78,7 +78,13 @@ class NgRename {
       return dir
     }
     catch (e) {
-      return this.findNgProjectDir(`${dir}/..`)
+      try {
+        fs.readFileSync(`${dir}/angular.json`) // for angular 6
+        return dir
+      }
+      catch (e) {
+        return this.findNgProjectDir(`${dir}/..`)
+      }
     }
   }
 
