@@ -1,5 +1,5 @@
 {
-  "name": "ng-rn",
+  "name": "ng-rnc",
   "version": "1.0.0",
   "license": "MIT",
   "description": "",
@@ -18,10 +18,10 @@
   },
   "devDependencies": {},
   "bin": {
-    "ng-rn": "./bin/ng-rn.js"
+    "ng-rnc": "./bin/ng-rnc.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rechenberger/ng-rn.git"
+    "url": "https://github.com/CMiksche/ng-rn.git"
   }
 }
