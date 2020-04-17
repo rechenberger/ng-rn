@@ -13,21 +13,34 @@ class NgRename {
   }
 
   async execute() {
-    await this.copyFiles()
-    await this.replace()
+    await this.copyFiles().catch()
+    await this.replace().catch()
   }
 
   async copyFiles() {
-    // // Copy Files
-    await new Promise((res, rej) => cpx.copy(`${this.old.folder}/**`, `${this.new.folder}`, err => err ? rej(err) : res()))
-    // // Delete old Files
-    await new Promise(res => rimraf(this.old.folder, res))
-    // Rename files
-    const files = fs.readdirSync(this.new.folder)
-    files.forEach(file => {
-      const newFileName = file.replace(this.old.fileName, this.new.fileName)
-      fs.renameSync(`${this.new.folder}/${file}`, `${this.new.folder}/${newFileName}`)
-    })
+    try {
+      // Copy Files
+      await new Promise((res, rej) => cpx.copy(
+        `${this.old.folder}/**`,
+        `${this.new.folder}`, 
+        err => err ? rej(err) : res()
+        )).catch((err) => {
+          console.log("There was an error in the copy process: " + err);
+        })
+      // Delete old Files
+      await new Promise(res => rimraf(this.old.folder, res)).catch((err) => {
+        console.log("There was an error in the delete process: " + err);
+      })
+      // Rename files
+      const files = fs.readdirSync(this.new.folder)
+      files.forEach(file => {
+        const newFileName = file.replace(this.old.fileName, this.new.fileName)
+        fs.renameSync(`${this.new.folder}/${file}`, `${this.new.folder}/${newFileName}`)
+      })
+    }
+    catch(err) {
+      console.log("There was an error in the copyFiles process: " + err);
+    }
   }
 
   createNames(name) {
@@ -59,32 +72,44 @@ class NgRename {
         files,
         from,
         to
+      }).catch((err) => {
+        if(!err.toString().includes("illegal operation on a directory")) {
+          console.log("There was an error in the replaceInFile process: " + err);
+        }
       })
 
-      updatedFiles.push(...results)
+      try {
+        updatedFiles.push(...results)
+      } catch (err) {
+
+      }
     }
 
-    console.log('Modified the following files:')
+    /* console.log('Modified the following files:')
     _(updatedFiles)
       .uniq()
       .each(updatedFile => console.log(updatedFile))
+      */
 
   }
 
   findNgProjectDir(dir) {
     dir = dir || this.dir
     try {
-      fs.readFileSync(`${dir}/.angular-cli.json`)
-      return dir
-    }
-    catch (e) {
-      try {
-        fs.readFileSync(`${dir}/angular.json`) // for angular 6
+      const angular_bigger_than6 = `${dir}/angular.json`
+      const angular_lower_than6 = `${dir}/.angular-cli.json`
+      if (fs.existsSync(angular_bigger_than6)) {
+        fs.readFileSync(angular_bigger_than6)
         return dir
-      }
-      catch (e) {
+      } else if (fs.existsSync(angular_lower_than6)) {
+        fs.readFileSync(angular_lower_than6)
+        return dir
+      } else {
         return this.findNgProjectDir(`${dir}/..`)
       }
+    }
+    catch (err) {
+      console.log("findNgProjectDir Error: " + err)
     }
   }
 

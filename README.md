@@ -9,7 +9,6 @@ This is a fork from the original [ng-rn](https://github.com/rechenberger/ng-rn) 
   npx ng-rnc old-button fancy-button
 ```
 
-
 ### Install
 ```
   npm i -g ng-rnc
